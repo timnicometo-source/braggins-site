@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SBR Partners | Trusted Network</title>
+  <meta name="description" content="Explore trusted SBR partner businesses." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">SBR</span><span class="brand-text"><strong>Trusted Network</strong><small>Powered by SBR Group</small></span></a>
+    <button class="mobile-toggle" id="mobileToggle" aria-label="Open navigation" aria-expanded="false">☰</button>
+    <nav class="site-nav" id="siteNav">
+      <a href="index.html">Find a Business</a><a href="how-it-works.html">How It Works</a><a href="partners.html" class="active">SBR Partners</a><a href="join.html">Join the Network</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <p class="eyebrow">Partner profiles</p>
+      <h1>Curated businesses with real local connection.</h1>
+      <p>This page can become the full partner archive, while the homepage keeps the fast search experience front and center.</p>
+    </section>
+
+    <section class="section results-section">
+      <div class="section-heading">
+        <div><p class="eyebrow">All partners</p><h2>Browse the network.</h2></div>
+      </div>
+      <div class="card-grid" id="partnerGrid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div><strong>SBR Trusted Network</strong><p>Curated referrals for local businesses.</p></div></footer>
+  <script src="data/partners.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
