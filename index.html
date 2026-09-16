@@ -64,7 +64,7 @@
 
 
   <!-- =========================================================
-       MAIN CONTENT
+       MAIN
   ========================================================== -->
   <main>
 
@@ -94,7 +94,7 @@
 
 
           <!-- =================================================
-               BUSINESS SEARCH
+               SEARCH FORM
           ================================================== -->
           <form class="trust-search" id="searchForm">
 
@@ -116,20 +116,18 @@
             </div>
 
 
-            <!-- ZIP CODE -->
+            <!-- CITY -->
             <div class="search-field">
-              <label class="sr-only" for="zipFilter">
-                ZIP code
+              <label class="sr-only" for="cityFilter">
+                City
               </label>
 
               <input
-                id="zipFilter"
-                name="zip"
+                id="cityFilter"
+                name="city"
                 type="text"
-                inputmode="numeric"
-                maxlength="10"
-                placeholder="ZIP code"
-                autocomplete="postal-code"
+                placeholder="City"
+                autocomplete="address-level2"
               />
             </div>
 
@@ -274,7 +272,7 @@
       ></div>
 
 
-      <!-- EMPTY SEARCH STATE -->
+      <!-- EMPTY STATE -->
       <div
         class="empty-state"
         id="emptyState"

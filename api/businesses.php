@@ -6,7 +6,8 @@ header('Content-Type: application/json; charset=utf-8');
 require_once dirname(__DIR__, 2) . '/db-config.php';
 
 $category = trim($_GET['category'] ?? '');
-$zip = trim($_GET['zip'] ?? '');
+$city = trim($_GET['city'] ?? '');
+$state = trim($_GET['state'] ?? 'MN');
 $type = trim($_GET['type'] ?? '');
 
 $allowedTypes = ['residential', 'commercial'];
@@ -31,6 +32,7 @@ $sql = "
         businesses.email,
         businesses.phone,
         businesses.website,
+        businesses.address,
         businesses.city,
         businesses.state,
         businesses.zip,
@@ -40,20 +42,35 @@ $sql = "
         ON businesses.id = business_categories.business_id
     INNER JOIN categories
         ON categories.id = business_categories.category_id
-    WHERE businesses.active = 1
-      AND categories.active = 1
 ";
 
 $params = [];
+
+if ($city !== '') {
+    $sql .= "
+        INNER JOIN business_service_areas
+            ON businesses.id = business_service_areas.business_id
+    ";
+}
+
+$sql .= "
+    WHERE businesses.active = 1
+      AND categories.active = 1
+";
 
 if ($category !== '') {
     $sql .= " AND categories.slug = :category";
     $params['category'] = $category;
 }
 
-if ($zip !== '') {
-    $sql .= " AND businesses.zip = :zip";
-    $params['zip'] = $zip;
+if ($city !== '') {
+    $sql .= "
+        AND business_service_areas.city = :city
+        AND business_service_areas.state = :state
+    ";
+
+    $params['city'] = $city;
+    $params['state'] = $state;
 }
 
 if ($type !== '') {

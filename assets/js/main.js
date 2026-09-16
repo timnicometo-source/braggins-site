@@ -8,13 +8,23 @@ if (mobileToggle && siteNav) {
   });
 }
 
+
+/* =========================================================
+   SEARCH ELEMENTS
+========================================================= */
+
 const partnerGrid = document.getElementById("partnerGrid");
 const searchForm = document.getElementById("searchForm");
 const categoryFilter = document.getElementById("categoryFilter");
-const zipFilter = document.getElementById("zipFilter");
+const cityFilter = document.getElementById("cityFilter");
 const typeFilter = document.getElementById("typeFilter");
 const resultCount = document.getElementById("resultCount");
 const emptyState = document.getElementById("emptyState");
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
 
 function getInitials(name) {
   return name
@@ -26,6 +36,7 @@ function getInitials(name) {
     .toUpperCase();
 }
 
+
 function formatBusinessType(type) {
   if (type === "both") {
     return "Residential & Commercial";
@@ -34,57 +45,119 @@ function formatBusinessType(type) {
   return type.charAt(0).toUpperCase() + type.slice(1);
 }
 
-function buildCard(business) {
-  const location = [
-    business.city,
-    business.state,
-    business.zip
-  ].filter(Boolean).join(", ").replace(", " + business.zip, " " + business.zip);
 
+function formatLocation(business) {
+  const cityState = [
+    business.city,
+    business.state
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  if (business.zip) {
+    return `${cityState} ${business.zip}`.trim();
+  }
+
+  return cityState;
+}
+
+
+/* =========================================================
+   BUILD BUSINESS CARD
+========================================================= */
+
+function buildCard(business) {
   const websiteLink = business.website
-    ? `<a href="${business.website}" target="_blank" rel="noopener">Website</a>`
+    ? `
+      <a
+        href="${business.website}"
+        target="_blank"
+        rel="noopener"
+      >
+        Website
+      </a>
+    `
     : "";
 
   const emailLink = business.email
-    ? `<a href="mailto:${business.email}">Email</a>`
+    ? `
+      <a href="mailto:${business.email}">
+        Email
+      </a>
+    `
     : "";
 
   const phoneLink = business.phone
-    ? `<a href="tel:${business.phone.replace(/[^\d+]/g, "")}">Call</a>`
+    ? `
+      <a href="tel:${business.phone.replace(/[^\d+]/g, "")}">
+        Call
+      </a>
+    `
     : "";
 
   return `
     <article class="partner-card">
+
       <div class="card-top">
-        <div class="logo-bubble">${getInitials(business.business_name)}</div>
-        <span class="tag">SBR Recommended</span>
+
+        <div class="logo-bubble">
+          ${getInitials(business.business_name)}
+        </div>
+
+        <span class="tag">
+          SBR Recommended
+        </span>
+
       </div>
 
-      <h3>${business.business_name}</h3>
 
-      <p class="location">${location}</p>
+      <h3>
+        ${business.business_name}
+      </h3>
+
+
+      <p class="location">
+        ${formatLocation(business)}
+      </p>
+
 
       <p class="summary">
         ${business.description || "Trusted SBR network business."}
       </p>
 
+
       <div class="tags">
-        <span>${formatBusinessType(business.business_type)}</span>
+
+        <span>
+          ${formatBusinessType(business.business_type)}
+        </span>
+
       </div>
+
 
       <div class="card-actions">
         ${websiteLink}
         ${emailLink}
         ${phoneLink}
       </div>
+
     </article>
   `;
 }
 
-function renderBusinesses(list) {
-  if (!partnerGrid) return;
 
-  partnerGrid.innerHTML = list.map(buildCard).join("");
+/* =========================================================
+   RENDER BUSINESS RESULTS
+========================================================= */
+
+function renderBusinesses(list) {
+  if (!partnerGrid) {
+    return;
+  }
+
+  partnerGrid.innerHTML = list
+    .map(buildCard)
+    .join("");
 
   if (resultCount) {
     resultCount.textContent =
@@ -96,68 +169,115 @@ function renderBusinesses(list) {
   }
 }
 
+
+/* =========================================================
+   LOAD CATEGORIES
+========================================================= */
+
 async function loadCategories() {
+  if (!categoryFilter) {
+    return;
+  }
+
   try {
     const response = await fetch("api/categories.php");
     const data = await response.json();
 
-    if (!data.success || !Array.isArray(data.categories)) {
+    if (!response.ok || !data.success || !Array.isArray(data.categories)) {
       throw new Error("Unable to load categories.");
     }
 
     data.categories.forEach(category => {
       const option = document.createElement("option");
+
       option.value = category.slug;
       option.textContent = category.category_name;
+
       categoryFilter.appendChild(option);
     });
+
   } catch (error) {
     console.error("Category load error:", error);
   }
 }
 
+
+/* =========================================================
+   SEARCH BUSINESSES
+========================================================= */
+
 async function searchBusinesses() {
   const category = categoryFilter?.value || "";
-  const zip = zipFilter?.value.trim() || "";
+  const city = cityFilter?.value.trim() || "";
   const type = typeFilter?.value || "";
 
   const params = new URLSearchParams();
+
 
   if (category) {
     params.set("category", category);
   }
 
-  if (zip) {
-    params.set("zip", zip);
+
+  if (city) {
+    params.set("city", city);
+
+    /*
+      For now, SBR is operating in Minnesota.
+      Later, if needed, we can add a state selector.
+    */
+    params.set("state", "MN");
   }
+
 
   if (type) {
     params.set("type", type);
   }
 
+
   try {
+
     if (resultCount) {
       resultCount.textContent = "Searching trusted partners...";
     }
 
-    const response = await fetch(`api/businesses.php?${params.toString()}`);
+
+    const response = await fetch(
+      `api/businesses.php?${params.toString()}`
+    );
+
+
     const data = await response.json();
 
+
     if (!response.ok || !data.success) {
-      throw new Error(data.message || "Unable to load businesses.");
+      throw new Error(
+        data.message || "Unable to load businesses."
+      );
     }
+
 
     renderBusinesses(data.businesses);
+
+
   } catch (error) {
-    console.error("Business search error:", error);
+
+    console.error(
+      "Business search error:",
+      error
+    );
+
 
     if (resultCount) {
-      resultCount.textContent = "Unable to load businesses.";
+      resultCount.textContent =
+        "Unable to load businesses.";
     }
+
 
     if (partnerGrid) {
       partnerGrid.innerHTML = "";
     }
+
 
     if (emptyState) {
       emptyState.hidden = false;
@@ -165,17 +285,29 @@ async function searchBusinesses() {
   }
 }
 
+
+/* =========================================================
+   SEARCH FORM SUBMIT
+========================================================= */
+
 if (searchForm) {
   searchForm.addEventListener("submit", event => {
     event.preventDefault();
 
     searchBusinesses();
 
-    document.getElementById("results")?.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
+    document
+      .getElementById("results")
+      ?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
   });
 }
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
 
 loadCategories();
