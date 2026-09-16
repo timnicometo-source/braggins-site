@@ -41,21 +41,38 @@
           </p>
 
           <form class="trust-search" id="searchForm">
-            <label class="sr-only" for="searchInput">Search by service, business, or keyword</label>
-            <input id="searchInput" type="search" placeholder="What do you need? Try “marketing”, “roofing”, or “accounting”" autocomplete="off" />
-            <select id="categoryFilter" aria-label="Choose category">
-              <option value="">All categories</option>
-            </select>
-            <button type="submit">Find Matches</button>
-          </form>
+  <label class="sr-only" for="categoryFilter">Choose a service</label>
+  <select id="categoryFilter" aria-label="Choose service">
+    <option value="">Choose a service</option>
+  </select>
 
-          <div class="quick-chips" aria-label="Popular search categories">
+  <label class="sr-only" for="zipFilter">ZIP code</label>
+  <input
+    id="zipFilter"
+    type="text"
+    inputmode="numeric"
+    maxlength="10"
+    placeholder="ZIP code"
+    autocomplete="postal-code"
+  />
+
+  <label class="sr-only" for="typeFilter">Residential or commercial</label>
+  <select id="typeFilter" aria-label="Residential or commercial">
+    <option value="">Residential or Commercial</option>
+    <option value="residential">Residential</option>
+    <option value="commercial">Commercial</option>
+  </select>
+
+  <button type="submit">Find Matches</button>
+</form>
+
+          <!-- <div class="quick-chips" aria-label="Popular search categories">
             <button data-chip="Marketing">Marketing</button>
             <button data-chip="Home Services">Home Services</button>
             <button data-chip="Finance">Finance</button>
             <button data-chip="Legal">Legal</button>
           </div>
-        </div>
+        </div> -->
 
         <aside class="hero-card">
           <div class="floating-badge">SBR Recommended</div>
@@ -141,7 +158,6 @@
     </nav>
   </footer>
 
-  <script src="data/partners.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>
