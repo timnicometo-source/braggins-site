@@ -284,14 +284,26 @@ if (searchForm) {
   searchForm.addEventListener("submit", event => {
     event.preventDefault();
 
-    searchBusinesses();
+    const category = categoryFilter?.value || "";
+    const city = cityFilter?.value.trim() || "";
+    const type = typeFilter?.value || "";
 
-    document
-      .getElementById("results")
-      ?.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
+    const params = new URLSearchParams();
+
+    if (category) {
+      params.set("category", category);
+    }
+
+    if (city) {
+      params.set("city", city);
+      params.set("state", "MN");
+    }
+
+    if (type) {
+      params.set("type", type);
+    }
+
+    window.location.href = `results.html?${params.toString()}`;
   });
 }
 
