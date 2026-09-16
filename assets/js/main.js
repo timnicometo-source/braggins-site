@@ -15,9 +15,11 @@ if (mobileToggle && siteNav) {
 
 const partnerGrid = document.getElementById("partnerGrid");
 const searchForm = document.getElementById("searchForm");
+
 const categoryFilter = document.getElementById("categoryFilter");
 const cityFilter = document.getElementById("cityFilter");
 const typeFilter = document.getElementById("typeFilter");
+
 const resultCount = document.getElementById("resultCount");
 const emptyState = document.getElementById("emptyState");
 
@@ -40,6 +42,10 @@ function getInitials(name) {
 function formatBusinessType(type) {
   if (type === "both") {
     return "Residential & Commercial";
+  }
+
+  if (!type) {
+    return "";
   }
 
   return type.charAt(0).toUpperCase() + type.slice(1);
@@ -110,30 +116,23 @@ function buildCard(business) {
 
       </div>
 
-
       <h3>
         ${business.business_name}
       </h3>
-
 
       <p class="location">
         ${formatLocation(business)}
       </p>
 
-
       <p class="summary">
         ${business.description || "Trusted SBR network business."}
       </p>
 
-
       <div class="tags">
-
         <span>
           ${formatBusinessType(business.business_type)}
         </span>
-
       </div>
-
 
       <div class="card-actions">
         ${websiteLink}
@@ -147,7 +146,7 @@ function buildCard(business) {
 
 
 /* =========================================================
-   RENDER BUSINESS RESULTS
+   RENDER RESULTS
 ========================================================= */
 
 function renderBusinesses(list) {
@@ -183,7 +182,11 @@ async function loadCategories() {
     const response = await fetch("api/categories.php");
     const data = await response.json();
 
-    if (!response.ok || !data.success || !Array.isArray(data.categories)) {
+    if (
+      !response.ok ||
+      !data.success ||
+      !Array.isArray(data.categories)
+    ) {
       throw new Error("Unable to load categories.");
     }
 
@@ -221,11 +224,6 @@ async function searchBusinesses() {
 
   if (city) {
     params.set("city", city);
-
-    /*
-      For now, SBR is operating in Minnesota.
-      Later, if needed, we can add a state selector.
-    */
     params.set("state", "MN");
   }
 
@@ -241,14 +239,11 @@ async function searchBusinesses() {
       resultCount.textContent = "Searching trusted partners...";
     }
 
-
     const response = await fetch(
       `api/businesses.php?${params.toString()}`
     );
 
-
     const data = await response.json();
-
 
     if (!response.ok || !data.success) {
       throw new Error(
@@ -256,9 +251,7 @@ async function searchBusinesses() {
       );
     }
 
-
     renderBusinesses(data.businesses);
-
 
   } catch (error) {
 
@@ -267,17 +260,14 @@ async function searchBusinesses() {
       error
     );
 
-
     if (resultCount) {
       resultCount.textContent =
         "Unable to load businesses.";
     }
 
-
     if (partnerGrid) {
       partnerGrid.innerHTML = "";
     }
-
 
     if (emptyState) {
       emptyState.hidden = false;
@@ -287,7 +277,7 @@ async function searchBusinesses() {
 
 
 /* =========================================================
-   SEARCH FORM SUBMIT
+   SEARCH SUBMIT
 ========================================================= */
 
 if (searchForm) {
