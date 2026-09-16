@@ -10,8 +10,9 @@ if (mobileToggle && siteNav) {
 
 const partnerGrid = document.getElementById("partnerGrid");
 const searchForm = document.getElementById("searchForm");
-const searchInput = document.getElementById("searchInput");
 const categoryFilter = document.getElementById("categoryFilter");
+const zipFilter = document.getElementById("zipFilter");
+const typeFilter = document.getElementById("typeFilter");
 const resultCount = document.getElementById("resultCount");
 const emptyState = document.getElementById("emptyState");
 
@@ -25,43 +26,69 @@ function getInitials(name) {
     .toUpperCase();
 }
 
-function buildCard(partner) {
-  const tags = partner.tags.map(tag => `<span>${tag}</span>`).join("");
+function formatBusinessType(type) {
+  if (type === "both") {
+    return "Residential & Commercial";
+  }
+
+  return type.charAt(0).toUpperCase() + type.slice(1);
+}
+
+function buildCard(business) {
+  const location = [
+    business.city,
+    business.state,
+    business.zip
+  ].filter(Boolean).join(", ").replace(", " + business.zip, " " + business.zip);
+
+  const websiteLink = business.website
+    ? `<a href="${business.website}" target="_blank" rel="noopener">Website</a>`
+    : "";
+
+  const emailLink = business.email
+    ? `<a href="mailto:${business.email}">Email</a>`
+    : "";
+
+  const phoneLink = business.phone
+    ? `<a href="tel:${business.phone.replace(/[^\d+]/g, "")}">Call</a>`
+    : "";
 
   return `
-    <article class="partner-card" data-category="${partner.category}">
+    <article class="partner-card">
       <div class="card-top">
-        <div class="logo-bubble">${getInitials(partner.name)}</div>
+        <div class="logo-bubble">${getInitials(business.business_name)}</div>
         <span class="tag">SBR Recommended</span>
       </div>
 
-      <p class="category">${partner.category}</p>
-      <h3>${partner.name}</h3>
-      <p class="location">${partner.location}</p>
-      <p class="summary">${partner.summary}</p>
+      <h3>${business.business_name}</h3>
 
-      <div class="tags">${tags}</div>
+      <p class="location">${location}</p>
 
-      <div class="recommendation">
-        <strong>Why SBR recommends them</strong>
-        ${partner.recommendation}
+      <p class="summary">
+        ${business.description || "Trusted SBR network business."}
+      </p>
+
+      <div class="tags">
+        <span>${formatBusinessType(business.business_type)}</span>
       </div>
 
       <div class="card-actions">
-        <a href="${partner.website}" target="_blank" rel="noopener">Website</a>
-        <a href="mailto:${partner.email}">Email</a>
+        ${websiteLink}
+        ${emailLink}
+        ${phoneLink}
       </div>
     </article>
   `;
 }
 
-function renderPartners(list) {
-  if (!partnerGrid || !window.SBR_PARTNERS) return;
+function renderBusinesses(list) {
+  if (!partnerGrid) return;
 
   partnerGrid.innerHTML = list.map(buildCard).join("");
 
   if (resultCount) {
-    resultCount.textContent = `${list.length} trusted ${list.length === 1 ? "match" : "matches"}`;
+    resultCount.textContent =
+      `${list.length} trusted ${list.length === 1 ? "match" : "matches"}`;
   }
 
   if (emptyState) {
@@ -69,67 +96,86 @@ function renderPartners(list) {
   }
 }
 
-function populateCategories() {
-  if (!categoryFilter || !window.SBR_PARTNERS) return;
+async function loadCategories() {
+  try {
+    const response = await fetch("api/categories.php");
+    const data = await response.json();
 
-  const categories = [...new Set(window.SBR_PARTNERS.map(partner => partner.category))].sort();
+    if (!data.success || !Array.isArray(data.categories)) {
+      throw new Error("Unable to load categories.");
+    }
 
-  categories.forEach(category => {
-    const option = document.createElement("option");
-    option.value = category;
-    option.textContent = category;
-    categoryFilter.appendChild(option);
-  });
+    data.categories.forEach(category => {
+      const option = document.createElement("option");
+      option.value = category.slug;
+      option.textContent = category.category_name;
+      categoryFilter.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Category load error:", error);
+  }
 }
 
-function filterPartners() {
-  const query = (searchInput?.value || "").trim().toLowerCase();
+async function searchBusinesses() {
   const category = categoryFilter?.value || "";
+  const zip = zipFilter?.value.trim() || "";
+  const type = typeFilter?.value || "";
 
-  const filtered = window.SBR_PARTNERS.filter(partner => {
-    const searchText = [
-      partner.name,
-      partner.category,
-      partner.location,
-      partner.summary,
-      partner.recommendation,
-      ...partner.tags
-    ].join(" ").toLowerCase();
+  const params = new URLSearchParams();
 
-    const matchesQuery = !query || searchText.includes(query);
-    const matchesCategory = !category || partner.category === category;
+  if (category) {
+    params.set("category", category);
+  }
 
-    return matchesQuery && matchesCategory;
-  });
+  if (zip) {
+    params.set("zip", zip);
+  }
 
-  renderPartners(filtered);
-}
+  if (type) {
+    params.set("type", type);
+  }
 
-if (window.SBR_PARTNERS && partnerGrid) {
-  populateCategories();
-  renderPartners(window.SBR_PARTNERS);
+  try {
+    if (resultCount) {
+      resultCount.textContent = "Searching trusted partners...";
+    }
+
+    const response = await fetch(`api/businesses.php?${params.toString()}`);
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || "Unable to load businesses.");
+    }
+
+    renderBusinesses(data.businesses);
+  } catch (error) {
+    console.error("Business search error:", error);
+
+    if (resultCount) {
+      resultCount.textContent = "Unable to load businesses.";
+    }
+
+    if (partnerGrid) {
+      partnerGrid.innerHTML = "";
+    }
+
+    if (emptyState) {
+      emptyState.hidden = false;
+    }
+  }
 }
 
 if (searchForm) {
   searchForm.addEventListener("submit", event => {
     event.preventDefault();
-    filterPartners();
-    document.getElementById("results")?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    searchBusinesses();
+
+    document.getElementById("results")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
   });
 }
 
-if (searchInput) {
-  searchInput.addEventListener("input", filterPartners);
-}
-
-if (categoryFilter) {
-  categoryFilter.addEventListener("change", filterPartners);
-}
-
-document.querySelectorAll("[data-chip]").forEach(chip => {
-  chip.addEventListener("click", () => {
-    if (searchInput) searchInput.value = chip.dataset.chip;
-    filterPartners();
-    document.getElementById("results")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  });
-});
+loadCategories();
