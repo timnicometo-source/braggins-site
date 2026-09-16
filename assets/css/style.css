@@ -202,13 +202,12 @@ select {
   display: grid;
 
   grid-template-columns:
-    minmax(0, 1.2fr)
-    minmax(320px, 0.8fr);
+    minmax(0, 1.45fr)
+    minmax(300px, 0.55fr);
 
-  gap:
-    clamp(28px, 5vw, 56px);
+  gap: 34px;
 
-  align-items: center;
+  align-items: start;
 }
 
 .hero-copy {
@@ -283,11 +282,13 @@ h3 {
   display: grid;
 
   grid-template-columns:
-    minmax(175px, 1fr)
-    minmax(140px, 0.8fr)
-    minmax(250px, 1.35fr);
+    minmax(210px, 1.05fr)
+    minmax(150px, 0.75fr)
+    minmax(265px, 1.3fr);
 
   gap: 10px;
+
+  width: 100%;
 
   padding: 10px;
 
@@ -315,22 +316,16 @@ h3 {
 
   border-radius: 16px;
 
-  padding:
-    0 16px;
+  padding: 0 18px;
 
   color: var(--ink);
 
   background: #f8fafc;
 }
 
-.trust-search input::placeholder {
-  color: #94a3b8;
-}
-
 .trust-search select {
   cursor: pointer;
-
-  padding-right: 38px;
+  padding-right: 42px;
 }
 
 .trust-search input:focus,
@@ -377,6 +372,10 @@ h3 {
 
 .hero-card {
   position: relative;
+
+  align-self: start;
+
+  margin-top: 30px;
 
   padding: 30px;
 
