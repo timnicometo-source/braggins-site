@@ -18,7 +18,7 @@ const searchForm = document.getElementById("searchForm");
 
 const categoryFilter = document.getElementById("categoryFilter");
 const cityFilter = document.getElementById("cityFilter");
-const typeFilter = document.getElementById("typeFilter");
+
 
 const resultCount = document.getElementById("resultCount");
 const emptyState = document.getElementById("emptyState");
@@ -258,7 +258,7 @@ if (
 async function searchBusinesses() {
   const category = categoryFilter?.value || "";
   const city = cityFilter?.value.trim() || "";
-  const type = typeFilter?.value || "";
+
 
   const params = new URLSearchParams();
 
@@ -274,9 +274,7 @@ async function searchBusinesses() {
   }
 
 
-  if (type) {
-    params.set("type", type);
-  }
+  
 
 
   try {
@@ -333,7 +331,7 @@ if (searchForm) {
 
     const category = categoryFilter?.value || "";
     const city = cityFilter?.value.trim() || "";
-    const type = typeFilter?.value || "";
+   
 
     const params = new URLSearchParams();
 
