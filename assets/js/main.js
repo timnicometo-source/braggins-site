@@ -192,8 +192,8 @@ async function loadCategories() {
     const response = await fetch("/api/categories.php");
 const data = await response.json();
 
-console.log("Category API response:", data);
-console.log("HTTP status:", response.status);
+console.log("Category API URL:", response.url);
+console.log("Category API response:", JSON.stringify(data, null, 2));
 console.log("Groups is array:", Array.isArray(data.groups));
 
 if (
