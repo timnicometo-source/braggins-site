@@ -1,0 +1,68 @@
+{
+    "memberships": [
+        {
+            "id": 101,
+            "status": "active",
+            "membership_type": "charter",
+            "chapter_id": 5,
+            "business_category_id": 133,
+            "business_sub_category_id": 146,
+            "remaining_months": -1,
+            "join_date": "2025-08-25",
+            "current_start_date": "2025-08-25",
+            "pause_date": null,
+            "pause_date_stop": null,
+            "cancel_date": null,
+            "created_at": "2026-01-18T18:57:45.043Z",
+            "updated_at": "2026-10-01T01:00:02.421Z",
+            "owner_type": "User",
+            "owner": {
+                "id": 104,
+                "first_name": "Jerome",
+                "last_name": "Rodney",
+                "email": "jrodney@rsbsmanagement.com",
+                "email_alternate": null,
+                "phone_number": "5076212420",
+                "permission_level": "member",
+                "status": "active",
+                "tumbler": false,
+                "nt_popl": false,
+                "card_holder": true,
+                "name_tag": false,
+                "profile_image_url": null
+            },
+            "company": {
+                "id": 143,
+                "company_name": "RSBS Management, Inc",
+                "owner_name": null,
+                "address": "1520 State Ave NW",
+                "city": "OWATONNA",
+                "state": "MN",
+                "zip_code": "55060",
+                "country": "US",
+                "business_email": "jrodney@ogimn.com",
+                "business_phone": "",
+                "website": "RSBS Management, Inc",
+                "description": null,
+                "logo_url": null
+            },
+            "representatives": [
+                {
+                    "id": 104,
+                    "first_name": "Jerome",
+                    "last_name": "Rodney",
+                    "email": "jrodney@rsbsmanagement.com",
+                    "email_alternate": null,
+                    "phone_number": "5076212420",
+                    "permission_level": "member",
+                    "status": "active",
+                    "tumbler": false,
+                    "nt_popl": false,
+                    "card_holder": true,
+                    "name_tag": false,
+                    "profile_image_url": null
+                }
+            ]
+        }
+    ]
+}

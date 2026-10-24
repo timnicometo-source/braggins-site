@@ -44,7 +44,7 @@ function formatBusinessType(type) {
     return "Residential & Commercial";
   }
 
-  if (!type) {
+  if (!type || type === "unknown") {
     return "";
   }
 
@@ -101,6 +101,20 @@ function buildCard(business) {
     `
     : "";
 
+  const formattedType = formatBusinessType(
+    business.business_type
+  );
+
+  const typeMarkup = formattedType
+    ? `
+      <div class="tags">
+        <span>
+          ${formattedType}
+        </span>
+      </div>
+    `
+    : "";
+
   return `
     <article class="partner-card">
 
@@ -128,11 +142,7 @@ function buildCard(business) {
         ${business.description || "Trusted SBR network business."}
       </p>
 
-      <div class="tags">
-        <span>
-          ${formatBusinessType(business.business_type)}
-        </span>
-      </div>
+      ${typeMarkup}
 
       <div class="card-actions">
         ${websiteLink}
@@ -185,18 +195,50 @@ async function loadCategories() {
     if (
       !response.ok ||
       !data.success ||
-      !Array.isArray(data.categories)
+      !Array.isArray(data.groups)
     ) {
       throw new Error("Unable to load categories.");
     }
 
-    data.categories.forEach(category => {
-      const option = document.createElement("option");
+    /*
+     * Remove any previously generated options/groups,
+     * but keep the first default option such as:
+     *
+     * <option value="">All Services</option>
+     */
 
-      option.value = category.slug;
-      option.textContent = category.category_name;
+    while (categoryFilter.options.length > 1) {
+      categoryFilter.remove(1);
+    }
 
-      categoryFilter.appendChild(option);
+    /*
+     * Build:
+     *
+     * Automotive
+     *   Auto Detailing
+     *   Auto Glass
+     *
+     * Financial Services
+     *   Financial Services
+     *   Advisor-Financial
+     *   Mortgage Lender
+     */
+
+    data.groups.forEach(group => {
+      const optgroup = document.createElement("optgroup");
+
+      optgroup.label = group.group;
+
+      group.categories.forEach(category => {
+        const option = document.createElement("option");
+
+        option.value = category.slug;
+        option.textContent = category.name;
+
+        optgroup.appendChild(option);
+      });
+
+      categoryFilter.appendChild(optgroup);
     });
 
   } catch (error) {
@@ -236,7 +278,8 @@ async function searchBusinesses() {
   try {
 
     if (resultCount) {
-      resultCount.textContent = "Searching trusted partners...";
+      resultCount.textContent =
+        "Searching trusted partners...";
     }
 
     const response = await fetch(
@@ -303,7 +346,8 @@ if (searchForm) {
       params.set("type", type);
     }
 
-    window.location.href = `results.html?${params.toString()}`;
+    window.location.href =
+      `results.html?${params.toString()}`;
   });
 }
 
