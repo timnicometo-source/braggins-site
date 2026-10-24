@@ -189,7 +189,7 @@ async function loadCategories() {
   }
 
   try {
-    const response = await fetch("api/categories.php");
+    const response = await fetch("/api/categories.php");
     const data = await response.json();
 
     if (
