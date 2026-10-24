@@ -190,15 +190,19 @@ async function loadCategories() {
 
   try {
     const response = await fetch("/api/categories.php");
-    const data = await response.json();
+const data = await response.json();
 
-    if (
-      !response.ok ||
-      !data.success ||
-      !Array.isArray(data.groups)
-    ) {
-      throw new Error("Unable to load categories.");
-    }
+console.log("Category API response:", data);
+console.log("HTTP status:", response.status);
+console.log("Groups is array:", Array.isArray(data.groups));
+
+if (
+  !response.ok ||
+  !data.success ||
+  !Array.isArray(data.groups)
+) {
+  throw new Error("Unable to load categories.");
+}
 
     /*
      * Remove any previously generated options/groups,
