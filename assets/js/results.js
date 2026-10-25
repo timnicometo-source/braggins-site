@@ -1,7 +1,14 @@
-const partnerGrid = document.getElementById("partnerGrid");
-const resultCount = document.getElementById("resultCount");
-const emptyState = document.getElementById("emptyState");
-const searchSummary = document.getElementById("searchSummary");
+const partnerGrid =
+  document.getElementById("partnerGrid");
+
+const resultCount =
+  document.getElementById("resultCount");
+
+const emptyState =
+  document.getElementById("emptyState");
+
+const searchSummary =
+  document.getElementById("searchSummary");
 
 
 /* =========================================================
@@ -9,6 +16,10 @@ const searchSummary = document.getElementById("searchSummary");
 ========================================================= */
 
 function getInitials(name) {
+  if (!name) {
+    return "";
+  }
+
   return name
     .split(" ")
     .filter(Boolean)
@@ -16,19 +27,6 @@ function getInitials(name) {
     .map(word => word[0])
     .join("")
     .toUpperCase();
-}
-
-
-function formatBusinessType(type) {
-  if (type === "both") {
-    return "Residential & Commercial";
-  }
-
-  if (!type || type === "unknown") {
-    return "";
-  }
-
-  return type.charAt(0).toUpperCase() + type.slice(1);
 }
 
 
@@ -40,45 +38,52 @@ function formatLocation(business) {
     .filter(Boolean)
     .join(", ");
 
+
   if (business.zip) {
     return `${cityState} ${business.zip}`.trim();
   }
+
 
   return cityState;
 }
 
 
 /*
- * Eric's database may contain:
+ * The SBR database sometimes contains:
  *
- * dirtylittleautodetails.com
+ * Dirtylittleautodetails.com
  *
  * instead of:
  *
- * https://dirtylittleautodetails.com
+ * https://www.dirtylittleautodetails.com/
  *
- * Without a protocol, the browser treats the URL as
- * relative to the Braggins website.
+ * Without https:// the browser treats it
+ * as a relative Braggins URL.
  */
+
 function normalizeWebsiteUrl(url) {
   if (!url) {
     return "";
   }
 
-  const trimmedUrl = url.trim();
 
-  if (!trimmedUrl) {
+  const cleanUrl =
+    url.trim();
+
+
+  if (!cleanUrl) {
     return "";
   }
 
+
   if (
-    trimmedUrl.startsWith("http://") ||
-    trimmedUrl.startsWith("https://")
+    /^https?:\/\//i.test(cleanUrl)
   ) {
-    return trimmedUrl;
+    return cleanUrl;
   }
 
-  return `https://${trimmedUrl}`;
+
+  return `https://${cleanUrl}`;
 }
 
 
@@ -87,71 +92,85 @@ function formatPhoneLink(phone) {
     return "";
   }
 
-  return phone.replace(/[^\d+]/g, "");
+
+  return phone.replace(
+    /[^\d+]/g,
+    ""
+  );
 }
 
 
 /* =========================================================
-   BUILD BUSINESS CARD
+   BUSINESS CARD
 ========================================================= */
 
 function buildCard(business) {
-  const websiteUrl = normalizeWebsiteUrl(
-    business.website
-  );
 
-  const websiteLink = websiteUrl
-    ? `
-      <a
-        href="${websiteUrl}"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Website
-      </a>
-    `
-    : "";
+  const websiteUrl =
+    normalizeWebsiteUrl(
+      business.website
+    );
 
-  const emailLink = business.email
-    ? `
-      <a href="mailto:${business.email}">
-        Email
-      </a>
-    `
-    : "";
 
-  const phoneNumber = business.phone
-    ? `
-      <p class="business-phone">
-        ${business.phone}
-      </p>
-    `
-    : "";
+  const websiteLink =
+    websiteUrl
+      ? `
+        <a
+          href="${websiteUrl}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Website
+        </a>
+      `
+      : "";
 
-  const phoneLink = business.phone
-  ? `
-    <a
-      class="mobile-call-button"
-      href="tel:${formatPhoneLink(business.phone)}"
-    >
-      Call
-    </a>
-  `
-  : "";
 
-  const formattedType = formatBusinessType(
-    business.business_type
-  );
+  const emailLink =
+    business.email
+      ? `
+        <a
+          href="mailto:${business.email}"
+        >
+          Email
+        </a>
+      `
+      : "";
 
-  const typeMarkup = formattedType
-    ? `
-      <div class="tags">
-        <span>
-          ${formattedType}
-        </span>
-      </div>
-    `
-    : "";
+
+  const phoneNumber =
+    business.phone
+      ? `
+        <p class="business-phone">
+          ${business.phone}
+        </p>
+      `
+      : "";
+
+
+  /*
+   * This button exists in the HTML,
+   * but CSS hides it on desktop.
+   */
+
+  const callButton =
+    business.phone
+      ? `
+        <a
+          class="mobile-call-button"
+          href="tel:${formatPhoneLink(
+            business.phone
+          )}"
+        >
+          Call
+        </a>
+      `
+      : "";
+
+
+  const location =
+    formatLocation(business);
+
 
   return `
     <article class="partner-card">
@@ -159,7 +178,9 @@ function buildCard(business) {
       <div class="card-top">
 
         <div class="logo-bubble">
-          ${getInitials(business.business_name)}
+          ${getInitials(
+            business.business_name
+          )}
         </div>
 
         <span class="tag">
@@ -168,26 +189,38 @@ function buildCard(business) {
 
       </div>
 
+
       <h3>
         ${business.business_name}
       </h3>
 
-      <p class="location">
-        ${formatLocation(business)}
-      </p>
+
+      ${
+        location
+          ? `
+            <p class="location">
+              ${location}
+            </p>
+          `
+          : ""
+      }
+
 
       ${phoneNumber}
 
+
       <p class="summary">
-        ${business.description || "Trusted SBR network business."}
+        ${
+          business.description ||
+          "Trusted SBR network business."
+        }
       </p>
 
-      ${typeMarkup}
 
       <div class="card-actions">
         ${websiteLink}
         ${emailLink}
-        ${phoneLink}
+        ${callButton}
       </div>
 
     </article>
@@ -200,25 +233,59 @@ function buildCard(business) {
 ========================================================= */
 
 function renderBusinesses(list) {
-  partnerGrid.innerHTML = list
-    .map(buildCard)
-    .join("");
 
-  resultCount.textContent =
-    `${list.length} trusted ${list.length === 1 ? "match" : "matches"}`;
+  if (!partnerGrid) {
+    return;
+  }
 
-  emptyState.hidden =
-    list.length !== 0;
+
+  if (!Array.isArray(list)) {
+    list = [];
+  }
+
+
+  partnerGrid.innerHTML =
+    list
+      .map(buildCard)
+      .join("");
+
+
+  if (resultCount) {
+    resultCount.textContent =
+      `${list.length} trusted ${
+        list.length === 1
+          ? "match"
+          : "matches"
+      }`;
+  }
+
+
+  if (emptyState) {
+    emptyState.hidden =
+      list.length !== 0;
+  }
 }
 
 
 /* =========================================================
-   LOAD RESULTS
+   LOAD SEARCH RESULTS
 ========================================================= */
 
 async function loadResults() {
+
   const params =
-    new URLSearchParams(window.location.search);
+    new URLSearchParams(
+      window.location.search
+    );
+
+
+  /*
+   * Remove any old type parameter
+   * that may exist in a bookmarked URL.
+   */
+
+  params.delete("type");
+
 
   const category =
     params.get("category") || "";
@@ -226,56 +293,87 @@ async function loadResults() {
   const city =
     params.get("city") || "";
 
-  const state =
-    params.get("state") || "";
 
   const summaryParts = [];
 
+
   if (category) {
     summaryParts.push(
-      category.replace(/-/g, " ")
+      category
+        .replace(/-/g, " ")
+        .replace(
+          /\b\w/g,
+          character =>
+            character.toUpperCase()
+        )
     );
   }
+
 
   if (city) {
     summaryParts.push(city);
   }
 
-  searchSummary.textContent =
-    summaryParts.length
-      ? `Showing trusted matches for ${summaryParts.join(" • ")}`
-      : "Showing trusted SBR businesses.";
+
+  if (searchSummary) {
+    searchSummary.textContent =
+      summaryParts.length
+        ? `Showing trusted matches for ${summaryParts.join(
+            " • "
+          )}`
+        : "Showing trusted SBR businesses.";
+  }
+
 
   try {
-    const response = await fetch(
-      `api/businesses.php?${params.toString()}`
-    );
 
-    const data = await response.json();
+    const response =
+      await fetch(
+        `/api/businesses.php?${params.toString()}`
+      );
 
-    if (!response.ok || !data.success) {
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !data.success
+    ) {
       throw new Error(
         data.message ||
         "Unable to load businesses."
       );
     }
 
+
     renderBusinesses(
       data.businesses
     );
 
   } catch (error) {
+
     console.error(
       "Results load error:",
       error
     );
 
-    resultCount.textContent =
-      "Unable to load businesses.";
 
-    partnerGrid.innerHTML = "";
+    if (resultCount) {
+      resultCount.textContent =
+        "Unable to load businesses.";
+    }
 
-    emptyState.hidden = false;
+
+    if (partnerGrid) {
+      partnerGrid.innerHTML = "";
+    }
+
+
+    if (emptyState) {
+      emptyState.hidden = false;
+    }
   }
 }
 
