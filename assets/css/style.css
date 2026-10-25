@@ -1143,7 +1143,38 @@ h3 {
   color: #111827;
   font-weight: 400;
 }
+/* =========================================================
+   BUSINESS PHONE
+========================================================= */
 
+.business-phone {
+  margin: -6px 0 14px;
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+
+/*
+ * Desktop/tablet:
+ * phone number is visible on the card,
+ * but the Call button is hidden.
+ */
+.mobile-call-button {
+  display: none !important;
+}
+
+
+/*
+ * Mobile:
+ * retain the phone number and also offer
+ * the convenient tap-to-call button.
+ */
+@media (max-width: 700px) {
+  .mobile-call-button {
+    display: grid !important;
+  }
+}
 /* =========================================================
    MOBILE
 ========================================================= */

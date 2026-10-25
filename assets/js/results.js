@@ -3,6 +3,11 @@ const resultCount = document.getElementById("resultCount");
 const emptyState = document.getElementById("emptyState");
 const searchSummary = document.getElementById("searchSummary");
 
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
 function getInitials(name) {
   return name
     .split(" ")
@@ -13,17 +18,19 @@ function getInitials(name) {
     .toUpperCase();
 }
 
+
 function formatBusinessType(type) {
   if (type === "both") {
     return "Residential & Commercial";
   }
 
-  if (!type) {
+  if (!type || type === "unknown") {
     return "";
   }
 
   return type.charAt(0).toUpperCase() + type.slice(1);
 }
+
 
 function formatLocation(business) {
   const cityState = [
@@ -40,13 +47,65 @@ function formatLocation(business) {
   return cityState;
 }
 
+
+/*
+ * Eric's database may contain:
+ *
+ * dirtylittleautodetails.com
+ *
+ * instead of:
+ *
+ * https://dirtylittleautodetails.com
+ *
+ * Without a protocol, the browser treats the URL as
+ * relative to the Braggins website.
+ */
+function normalizeWebsiteUrl(url) {
+  if (!url) {
+    return "";
+  }
+
+  const trimmedUrl = url.trim();
+
+  if (!trimmedUrl) {
+    return "";
+  }
+
+  if (
+    trimmedUrl.startsWith("http://") ||
+    trimmedUrl.startsWith("https://")
+  ) {
+    return trimmedUrl;
+  }
+
+  return `https://${trimmedUrl}`;
+}
+
+
+function formatPhoneLink(phone) {
+  if (!phone) {
+    return "";
+  }
+
+  return phone.replace(/[^\d+]/g, "");
+}
+
+
+/* =========================================================
+   BUILD BUSINESS CARD
+========================================================= */
+
 function buildCard(business) {
-  const websiteLink = business.website
+  const websiteUrl = normalizeWebsiteUrl(
+    business.website
+  );
+
+  const websiteLink = websiteUrl
     ? `
       <a
-        href="${business.website}"
+        href="${websiteUrl}"
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
       >
         Website
       </a>
@@ -61,11 +120,36 @@ function buildCard(business) {
     `
     : "";
 
+  const phoneNumber = business.phone
+    ? `
+      <p class="business-phone">
+        ${business.phone}
+      </p>
+    `
+    : "";
+
   const phoneLink = business.phone
     ? `
-      <a href="tel:${business.phone.replace(/[^\d+]/g, "")}">
+      <a
+        class="mobile-call-button"
+        href="tel:${formatPhoneLink(business.phone)}"
+      >
         Call
       </a>
+    `
+    : "";
+
+  const formattedType = formatBusinessType(
+    business.business_type
+  );
+
+  const typeMarkup = formattedType
+    ? `
+      <div class="tags">
+        <span>
+          ${formattedType}
+        </span>
+      </div>
     `
     : "";
 
@@ -92,15 +176,13 @@ function buildCard(business) {
         ${formatLocation(business)}
       </p>
 
+      ${phoneNumber}
+
       <p class="summary">
         ${business.description || "Trusted SBR network business."}
       </p>
 
-      <div class="tags">
-        <span>
-          ${formatBusinessType(business.business_type)}
-        </span>
-      </div>
+      ${typeMarkup}
 
       <div class="card-actions">
         ${websiteLink}
@@ -112,6 +194,11 @@ function buildCard(business) {
   `;
 }
 
+
+/* =========================================================
+   RENDER RESULTS
+========================================================= */
+
 function renderBusinesses(list) {
   partnerGrid.innerHTML = list
     .map(buildCard)
@@ -120,34 +207,44 @@ function renderBusinesses(list) {
   resultCount.textContent =
     `${list.length} trusted ${list.length === 1 ? "match" : "matches"}`;
 
-  emptyState.hidden = list.length !== 0;
+  emptyState.hidden =
+    list.length !== 0;
 }
 
-async function loadResults() {
-  const params = new URLSearchParams(window.location.search);
 
-  const category = params.get("category") || "";
-  const city = params.get("city") || "";
-  const state = params.get("state") || "";
-  const type = params.get("type") || "";
+/* =========================================================
+   LOAD RESULTS
+========================================================= */
+
+async function loadResults() {
+  const params =
+    new URLSearchParams(window.location.search);
+
+  const category =
+    params.get("category") || "";
+
+  const city =
+    params.get("city") || "";
+
+  const state =
+    params.get("state") || "";
 
   const summaryParts = [];
 
   if (category) {
-    summaryParts.push(category.replace(/-/g, " "));
+    summaryParts.push(
+      category.replace(/-/g, " ")
+    );
   }
 
   if (city) {
     summaryParts.push(city);
   }
 
-  if (type) {
-    summaryParts.push(type);
-  }
-
-  searchSummary.textContent = summaryParts.length
-    ? `Showing trusted matches for ${summaryParts.join(" • ")}`
-    : "Showing trusted SBR businesses.";
+  searchSummary.textContent =
+    summaryParts.length
+      ? `Showing trusted matches for ${summaryParts.join(" • ")}`
+      : "Showing trusted SBR businesses.";
 
   try {
     const response = await fetch(
@@ -158,14 +255,20 @@ async function loadResults() {
 
     if (!response.ok || !data.success) {
       throw new Error(
-        data.message || "Unable to load businesses."
+        data.message ||
+        "Unable to load businesses."
       );
     }
 
-    renderBusinesses(data.businesses);
+    renderBusinesses(
+      data.businesses
+    );
 
   } catch (error) {
-    console.error("Results load error:", error);
+    console.error(
+      "Results load error:",
+      error
+    );
 
     resultCount.textContent =
       "Unable to load businesses.";
@@ -175,5 +278,10 @@ async function loadResults() {
     emptyState.hidden = false;
   }
 }
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
 
 loadResults();
