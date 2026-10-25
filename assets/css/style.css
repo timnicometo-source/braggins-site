@@ -1219,4 +1219,54 @@ h3 {
     min-height: 52px;
   }
 
+}/* =========================================================
+   BUSINESS CONTACT DETAILS
+========================================================= */
+
+.business-location {
+  margin-top: 8px;
+}
+
+.business-address {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.partner-card .location {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.business-phone {
+  margin: 0 0 14px;
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   MOBILE-ONLY CALL BUTTON
+========================================================= */
+
+/*
+ * Hidden everywhere by default.
+ * This overrides .card-actions a { display: grid; }
+ */
+.card-actions .mobile-call-button {
+  display: none !important;
+}
+
+
+/*
+ * Only show Call button on phones.
+ */
+@media (max-width: 700px) {
+
+  .card-actions .mobile-call-button {
+    display: grid !important;
+  }
+
 }

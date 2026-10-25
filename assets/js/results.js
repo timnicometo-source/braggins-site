@@ -30,7 +30,7 @@ function getInitials(name) {
 }
 
 
-function formatLocation(business) {
+function formatCityStateZip(business) {
   const cityState = [
     business.city,
     business.state
@@ -38,50 +38,28 @@ function formatLocation(business) {
     .filter(Boolean)
     .join(", ");
 
-
   if (business.zip) {
     return `${cityState} ${business.zip}`.trim();
   }
 
-
   return cityState;
 }
 
-
-/*
- * The SBR database sometimes contains:
- *
- * Dirtylittleautodetails.com
- *
- * instead of:
- *
- * https://www.dirtylittleautodetails.com/
- *
- * Without https:// the browser treats it
- * as a relative Braggins URL.
- */
 
 function normalizeWebsiteUrl(url) {
   if (!url) {
     return "";
   }
 
-
-  const cleanUrl =
-    url.trim();
-
+  const cleanUrl = url.trim();
 
   if (!cleanUrl) {
     return "";
   }
 
-
-  if (
-    /^https?:\/\//i.test(cleanUrl)
-  ) {
+  if (/^https?:\/\//i.test(cleanUrl)) {
     return cleanUrl;
   }
-
 
   return `https://${cleanUrl}`;
 }
@@ -92,11 +70,7 @@ function formatPhoneLink(phone) {
     return "";
   }
 
-
-  return phone.replace(
-    /[^\d+]/g,
-    ""
-  );
+  return phone.replace(/[^\d+]/g, "");
 }
 
 
@@ -148,11 +122,6 @@ function buildCard(business) {
       : "";
 
 
-  /*
-   * This button exists in the HTML,
-   * but CSS hides it on desktop.
-   */
-
   const callButton =
     business.phone
       ? `
@@ -168,8 +137,28 @@ function buildCard(business) {
       : "";
 
 
-  const location =
-    formatLocation(business);
+  const streetAddress =
+    business.address
+      ? `
+        <p class="business-address">
+          ${business.address}
+        </p>
+      `
+      : "";
+
+
+  const cityStateZip =
+    formatCityStateZip(business);
+
+
+  const cityStateZipMarkup =
+    cityStateZip
+      ? `
+        <p class="location">
+          ${cityStateZip}
+        </p>
+      `
+      : "";
 
 
   return `
@@ -195,15 +184,10 @@ function buildCard(business) {
       </h3>
 
 
-      ${
-        location
-          ? `
-            <p class="location">
-              ${location}
-            </p>
-          `
-          : ""
-      }
+      <div class="business-location">
+        ${streetAddress}
+        ${cityStateZipMarkup}
+      </div>
 
 
       ${phoneNumber}
@@ -238,11 +222,9 @@ function renderBusinesses(list) {
     return;
   }
 
-
   if (!Array.isArray(list)) {
     list = [];
   }
-
 
   partnerGrid.innerHTML =
     list
@@ -268,7 +250,7 @@ function renderBusinesses(list) {
 
 
 /* =========================================================
-   LOAD SEARCH RESULTS
+   LOAD RESULTS
 ========================================================= */
 
 async function loadResults() {
@@ -280,10 +262,9 @@ async function loadResults() {
 
 
   /*
-   * Remove any old type parameter
-   * that may exist in a bookmarked URL.
+   * Remove obsolete residential/commercial filter
+   * from older saved URLs.
    */
-
   params.delete("type");
 
 
