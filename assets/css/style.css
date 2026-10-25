@@ -1181,6 +1181,16 @@ h3 {
 
 @media (max-width: 560px) {
 
+  .mobile-call-button {
+  display: none !important;
+}
+
+@media (max-width: 700px) {
+  .mobile-call-button {
+    display: grid !important;
+  }
+}
+  
   .brand-text small {
     display: none;
   }
