@@ -1295,4 +1295,58 @@ h3 {
     min-height: 52px;
   }
 
+}/* =========================================================
+   PARTNER CATEGORY SECTIONS
+========================================================= */
+
+#partnerGrid {
+  display: block;
+}
+
+.partner-category-section {
+  margin:
+    0 0 64px;
+}
+
+.partner-category-heading {
+  margin-bottom: 22px;
+}
+
+.partner-category-heading h2 {
+  margin-bottom: 8px;
+}
+
+.partner-category-count {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.partner-category-section .card-grid {
+  margin-top: 18px;
+}
+
+.partner-category-label {
+  width: fit-content;
+
+  margin-top: 18px;
+
+  padding:
+    6px 10px;
+
+  border-radius: 999px;
+
+  background:
+    #eefdfb;
+
+  color:
+    var(--green-dark);
+
+  font-size: 0.76rem;
+  font-weight: 800;
+
+  text-transform: uppercase;
+
+  letter-spacing:
+    0.05em;
 }

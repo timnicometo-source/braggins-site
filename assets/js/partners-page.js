@@ -57,13 +57,45 @@
       return "";
     }
 
-    if (
-      /^https?:\/\//i.test(cleanUrl)
-    ) {
+    if (/^https?:\/\//i.test(cleanUrl)) {
       return cleanUrl;
     }
 
     return `https://${cleanUrl}`;
+  }
+
+
+  function formatPhoneNumber(phone) {
+    if (!phone) {
+      return "";
+    }
+
+    const digits =
+      phone.replace(/\D/g, "");
+
+    /*
+     * 11-digit US number with leading 1
+     */
+    if (
+      digits.length === 11 &&
+      digits.startsWith("1")
+    ) {
+      return `(${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
+    }
+
+
+    /*
+     * Standard 10-digit US number
+     */
+    if (digits.length === 10) {
+      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    }
+
+
+    /*
+     * Don't guess if the number is unusual.
+     */
+    return phone;
   }
 
 
@@ -76,6 +108,33 @@
       /[^\d+]/g,
       ""
     );
+  }
+
+
+  function getTopLevelCategory(business) {
+    return (
+      business.parent_category_name ||
+      business.category_name ||
+      "Other"
+    );
+  }
+
+
+  function getSpecificCategory(business) {
+    /*
+     * If the business is already assigned directly
+     * to the top-level category, don't repeat it.
+     */
+
+    if (
+      !business.parent_category_name ||
+      business.parent_category_name ===
+        business.category_name
+    ) {
+      return "";
+    }
+
+    return business.category_name || "";
   }
 
 
@@ -143,7 +202,9 @@
 
 
     const location =
-      formatPartnerLocation(business);
+      formatPartnerLocation(
+        business
+      );
 
 
     const locationMarkup =
@@ -160,8 +221,26 @@
       business.phone
         ? `
           <p class="business-phone">
-            ${business.phone}
+            ${formatPhoneNumber(
+              business.phone
+            )}
           </p>
+        `
+        : "";
+
+
+    const specificCategory =
+      getSpecificCategory(
+        business
+      );
+
+
+    const categoryMarkup =
+      specificCategory
+        ? `
+          <div class="partner-category-label">
+            ${specificCategory}
+          </div>
         `
         : "";
 
@@ -182,6 +261,9 @@
           </span>
 
         </div>
+
+
+        ${categoryMarkup}
 
 
         <h3>
@@ -218,6 +300,38 @@
 
 
   /* =========================================================
+     GROUP BUSINESSES
+  ========================================================= */
+
+  function groupPartners(list) {
+
+    const groups = {};
+
+
+    list.forEach(business => {
+
+      const groupName =
+        getTopLevelCategory(
+          business
+        );
+
+
+      if (!groups[groupName]) {
+        groups[groupName] = [];
+      }
+
+
+      groups[groupName].push(
+        business
+      );
+    });
+
+
+    return groups;
+  }
+
+
+  /* =========================================================
      RENDER PARTNERS
   ========================================================= */
 
@@ -233,17 +347,69 @@
     }
 
 
-    list.sort((a, b) =>
-      (a.business_name || "")
-        .localeCompare(
-          b.business_name || ""
-        )
-    );
+    const grouped =
+      groupPartners(list);
+
+
+    const groupNames =
+      Object.keys(grouped)
+        .sort((a, b) =>
+          a.localeCompare(b)
+        );
 
 
     partnersGrid.innerHTML =
-      list
-        .map(buildPartnerCard)
+      groupNames
+        .map(groupName => {
+
+          const businesses =
+            grouped[groupName]
+              .sort((a, b) =>
+                (a.business_name || "")
+                  .localeCompare(
+                    b.business_name || ""
+                  )
+              );
+
+
+          return `
+            <section class="partner-category-section">
+
+              <div class="partner-category-heading">
+
+                <p class="eyebrow">
+                  SBR Category
+                </p>
+
+                <h2>
+                  ${groupName}
+                </h2>
+
+                <p class="partner-category-count">
+                  ${businesses.length}
+                  ${
+                    businesses.length === 1
+                      ? "business"
+                      : "businesses"
+                  }
+                </p>
+
+              </div>
+
+
+              <div class="card-grid">
+
+                ${businesses
+                  .map(
+                    buildPartnerCard
+                  )
+                  .join("")}
+
+              </div>
+
+            </section>
+          `;
+        })
         .join("");
 
 
@@ -285,7 +451,9 @@
       if (
         !response.ok ||
         !data.success ||
-        !Array.isArray(data.businesses)
+        !Array.isArray(
+          data.businesses
+        )
       ) {
         throw new Error(
           data.message ||
