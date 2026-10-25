@@ -129,15 +129,15 @@ function buildCard(business) {
     : "";
 
   const phoneLink = business.phone
-    ? `
-      <a
-        class="mobile-call-button"
-        href="tel:${formatPhoneLink(business.phone)}"
-      >
-        Call
-      </a>
-    `
-    : "";
+  ? `
+    <a
+      class="mobile-call-button"
+      href="tel:${formatPhoneLink(business.phone)}"
+    >
+      Call
+    </a>
+  `
+  : "";
 
   const formattedType = formatBusinessType(
     business.business_type
