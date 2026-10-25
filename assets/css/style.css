@@ -366,6 +366,22 @@ h3 {
 
 
 /* =========================================================
+   CATEGORY DROPDOWN
+========================================================= */
+
+#categoryFilter optgroup {
+  color: #111827;
+  font-weight: 700;
+  font-style: normal;
+}
+
+#categoryFilter option {
+  color: #111827;
+  font-weight: 400;
+}
+
+
+/* =========================================================
    HERO CARD
 ========================================================= */
 
@@ -633,12 +649,23 @@ h3 {
 
 .partner-card .location {
   margin:
-    6px 0 14px;
+    6px 0 8px;
 
   color:
     var(--muted);
 
   font-weight: 700;
+}
+
+.business-phone {
+  margin:
+    0 0 14px;
+
+  color:
+    var(--ink);
+
+  font-size: 0.95rem;
+  font-weight: 800;
 }
 
 .partner-card .summary {
@@ -687,7 +714,8 @@ h3 {
 
   gap: 10px;
 
-  margin-top: 18px;
+  margin-top: auto;
+  padding-top: 18px;
 }
 
 .card-actions a {
@@ -721,6 +749,20 @@ h3 {
 .card-actions a:hover {
   filter:
     brightness(0.97);
+}
+
+
+/* =========================================================
+   MOBILE CALL BUTTON
+========================================================= */
+
+/*
+ * Desktop and tablet:
+ * the phone number is visible,
+ * but the Call button is hidden.
+ */
+.mobile-call-button {
+  display: none !important;
 }
 
 
@@ -1098,16 +1140,6 @@ h3 {
       1fr 1fr;
   }
 
-  .trust-search .search-field:first-child {
-    grid-column:
-      1 / -1;
-  }
-
-  .trust-search .search-field:nth-child(3) {
-    grid-column:
-      1 / -1;
-  }
-
   .trust-search button {
     grid-column:
       1 / -1;
@@ -1132,57 +1164,23 @@ h3 {
   }
 
 }
-/* Category dropdown group headings */
-#categoryFilter optgroup {
-  color: #111827;
-  font-weight: 700;
-  font-style: normal;
-}
-
-#categoryFilter option {
-  color: #111827;
-  font-weight: 400;
-}
-/* =========================================================
-   BUSINESS PHONE
-========================================================= */
-
-.business-phone {
-  margin: -6px 0 14px;
-  color: var(--ink);
-  font-weight: 800;
-  font-size: 0.95rem;
-}
 
 
-/*
- * Desktop/tablet:
- * phone number is visible on the card,
- * but the Call button is hidden.
- */
-.mobile-call-button {
-  display: none !important;
-}
-
-
-/*
- * Mobile:
- * retain the phone number and also offer
- * the convenient tap-to-call button.
- */
-@media (max-width: 700px) {
-  .mobile-call-button {
-    display: grid !important;
-  }
-}
 /* =========================================================
    MOBILE
 ========================================================= */
 
+@media (max-width: 700px) {
+
+  .mobile-call-button {
+    display: grid !important;
+  }
+
+}
+
+
 @media (max-width: 560px) {
 
-  
-  
   .brand-text small {
     display: none;
   }
@@ -1211,7 +1209,6 @@ h3 {
   }
 
   .trust-search .search-field:first-child,
-  .trust-search .search-field:nth-child(3),
   .trust-search button {
     grid-column: auto;
   }
@@ -1222,13 +1219,4 @@ h3 {
     min-height: 52px;
   }
 
-}
-.mobile-call-button {
-  display: none !important;
-}
-
-@media (max-width: 700px) {
-  .mobile-call-button {
-    display: grid !important;
-  }
 }
