@@ -24,7 +24,6 @@ body {
   margin: 0;
   font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--ink);
-
   background:
     radial-gradient(
       circle at top left,
@@ -37,7 +36,6 @@ body {
       transparent 28rem
     ),
     var(--paper);
-
   line-height: 1.6;
 }
 
@@ -60,7 +58,6 @@ select {
 .site-header {
   width: min(1180px, calc(100% - 32px));
   margin: 18px auto 0;
-
   position: sticky;
   top: 14px;
   z-index: 20;
@@ -73,14 +70,10 @@ select {
   padding: 14px 16px;
 
   background: rgba(255, 255, 255, 0.76);
-
-  border:
-    1px solid rgba(255, 255, 255, 0.72);
-
+  border: 1px solid rgba(255, 255, 255, 0.72);
   border-radius: 999px;
 
-  backdrop-filter:
-    blur(18px);
+  backdrop-filter: blur(18px);
 
   box-shadow:
     0 16px 45px rgba(15, 23, 42, 0.08);
@@ -89,9 +82,7 @@ select {
 .brand {
   display: flex;
   align-items: center;
-
   gap: 12px;
-
   min-width: max-content;
 }
 
@@ -106,10 +97,7 @@ select {
 
   color: white;
 
-  font-family:
-    "Space Grotesk",
-    sans-serif;
-
+  font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
 
   background:
@@ -125,36 +113,28 @@ select {
 
 .brand-text {
   display: grid;
-
   line-height: 1.05;
 }
 
 .brand-text strong {
-  font-family:
-    "Space Grotesk",
-    sans-serif;
-
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1.02rem;
 }
 
 .brand-text small {
-  margin-top: 4px;
-
   color: var(--muted);
-
   font-size: 0.75rem;
+  margin-top: 4px;
 }
 
 .site-nav {
   display: flex;
   align-items: center;
-
   gap: 4px;
 }
 
 .site-nav a {
-  padding:
-    10px 14px;
+  padding: 10px 14px;
 
   border-radius: 999px;
 
@@ -167,7 +147,6 @@ select {
 .site-nav a:hover,
 .site-nav a.active {
   background: var(--navy);
-
   color: white;
 }
 
@@ -181,7 +160,6 @@ select {
   border-radius: 999px;
 
   background: var(--navy);
-
   color: white;
 }
 
@@ -191,11 +169,9 @@ select {
 ========================================================= */
 
 .hero {
-  width:
-    min(1180px, calc(100% - 32px));
+  width: min(1180px, calc(100% - 32px));
 
-  margin:
-    44px auto 0;
+  margin: 44px auto 0;
 
   padding:
     clamp(30px, 5vw, 58px);
@@ -239,8 +215,7 @@ select {
 }
 
 .eyebrow {
-  margin:
-    0 0 12px;
+  margin: 0 0 12px;
 
   color: var(--green);
 
@@ -248,7 +223,6 @@ select {
   font-weight: 800;
 
   text-transform: uppercase;
-
   letter-spacing: 0.16em;
 }
 
@@ -263,14 +237,11 @@ h2,
 h3 {
   margin: 0;
 
-  font-family:
-    "Space Grotesk",
-    sans-serif;
+  font-family: "Space Grotesk", sans-serif;
 
   line-height: 1.02;
 
-  letter-spacing:
-    -0.045em;
+  letter-spacing: -0.045em;
 }
 
 h1 {
@@ -344,8 +315,7 @@ h3 {
 
   border-radius: 16px;
 
-  padding:
-    0 18px;
+  padding: 0 18px;
 
   color: var(--ink);
 
@@ -354,7 +324,6 @@ h3 {
 
 .trust-search select {
   cursor: pointer;
-
   padding-right: 42px;
 }
 
@@ -402,14 +371,12 @@ h3 {
 
 #categoryFilter optgroup {
   color: #111827;
-
   font-weight: 700;
   font-style: normal;
 }
 
 #categoryFilter option {
   color: #111827;
-
   font-weight: 400;
 }
 
@@ -466,8 +433,7 @@ h3 {
 
   text-transform: uppercase;
 
-  letter-spacing:
-    0.06em;
+  letter-spacing: 0.06em;
 }
 
 .hero-card h2 {
@@ -584,8 +550,7 @@ h3 {
 }
 
 .result-count {
-  color:
-    var(--muted);
+  color: var(--muted);
 
   font-weight: 700;
 }
@@ -594,10 +559,7 @@ h3 {
   display: grid;
 
   grid-template-columns:
-    repeat(
-      3,
-      minmax(0, 1fr)
-    );
+    repeat(3, minmax(0, 1fr));
 
   gap: 18px;
 }
@@ -685,26 +647,9 @@ h3 {
   margin-top: 18px;
 }
 
-
-/* =========================================================
-   BUSINESS LOCATION
-========================================================= */
-
-.business-location {
-  margin-top: 8px;
-}
-
-.business-address {
-  margin: 0;
-
-  color: var(--ink);
-
-  font-weight: 500;
-}
-
 .partner-card .location {
   margin:
-    4px 0 10px;
+    6px 0 8px;
 
   color:
     var(--muted);
@@ -714,28 +659,22 @@ h3 {
 
 .business-phone {
   margin:
-    10px 0 14px;
+    0 0 14px;
 
   color:
     var(--ink);
 
   font-size: 0.95rem;
-
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .partner-card .summary {
-  margin:
-    0 0 18px;
-
   color:
     #475569;
+
+  margin:
+    0 0 18px;
 }
-
-
-/* =========================================================
-   TAGS
-========================================================= */
 
 .tags {
   display: flex;
@@ -764,11 +703,6 @@ h3 {
   font-weight: 800;
 }
 
-
-/* =========================================================
-   BUSINESS CARD ACTIONS
-========================================================= */
-
 .card-actions {
   display: grid;
 
@@ -781,7 +715,6 @@ h3 {
   gap: 10px;
 
   margin-top: auto;
-
   padding-top: 18px;
 }
 
@@ -820,34 +753,16 @@ h3 {
 
 
 /* =========================================================
-   CALL BUTTON
+   MOBILE CALL BUTTON
 ========================================================= */
 
 /*
- * Hide Call everywhere by default.
- * This selector is intentionally more specific
- * than the general .card-actions a rule.
+ * Desktop and tablet:
+ * the phone number is visible,
+ * but the Call button is hidden.
  */
-
-.card-actions .mobile-call-button {
+.mobile-call-button {
   display: none !important;
-}
-
-
-/*
- * Show the Call button only on devices whose
- * primary input is touch-oriented.
- *
- * This prevents a desktop browser with a narrow
- * window or docked DevTools from showing Call.
- */
-
-@media (hover: none) and (pointer: coarse) {
-
-  .card-actions .mobile-call-button {
-    display: grid !important;
-  }
-
 }
 
 
@@ -1255,6 +1170,15 @@ h3 {
    MOBILE
 ========================================================= */
 
+@media (max-width: 700px) {
+
+  .mobile-call-button {
+    display: grid !important;
+  }
+
+}
+
+
 @media (max-width: 560px) {
 
   .brand-text small {
@@ -1293,6 +1217,56 @@ h3 {
   .trust-search select,
   .trust-search button {
     min-height: 52px;
+  }
+
+}/* =========================================================
+   BUSINESS CONTACT DETAILS
+========================================================= */
+
+.business-location {
+  margin-top: 8px;
+}
+
+.business-address {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.partner-card .location {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.business-phone {
+  margin: 0 0 14px;
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   MOBILE-ONLY CALL BUTTON
+========================================================= */
+
+/*
+ * Hidden everywhere by default.
+ * This overrides .card-actions a { display: grid; }
+ */
+.card-actions .mobile-call-button {
+  display: none !important;
+}
+
+
+/*
+ * Only show Call button on phones.
+ */
+@media (max-width: 700px) {
+
+  .card-actions .mobile-call-button {
+    display: grid !important;
   }
 
 }
