@@ -1350,3 +1350,66 @@ h3 {
   letter-spacing:
     0.05em;
 }
+
+/* =========================================================
+   PARTNERS DIRECTORY CATEGORY LAYOUT
+========================================================= */
+
+#partnerGrid {
+  display: block;
+  width: 100%;
+}
+
+.partner-category-section {
+  display: block;
+  width: 100%;
+  margin: 0 0 64px;
+}
+
+.partner-category-heading {
+  margin-bottom: 22px;
+}
+
+.partner-category-heading h2 {
+  margin-bottom: 8px;
+}
+
+.partner-category-count {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+
+/* Business cards inside each category */
+.partner-category-section .card-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 18px;
+
+  width: 100%;
+}
+
+
+/* Tablet */
+@media (max-width: 920px) {
+
+  .partner-category-section .card-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+/* Phone */
+@media (max-width: 620px) {
+
+  .partner-category-section .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
